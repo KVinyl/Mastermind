@@ -74,7 +74,7 @@ def draw_feedback(fb_record, turn):
         x = (width - SQUARESIZE) + SQUARESIZE//4 + i % 2 * SQUARESIZE//2
         y = (height - ((turn+2) * SQUARESIZE)) + \
             SQUARESIZE//4 + i//2 * SQUARESIZE//2
-        radius = SQUARESIZE // 10
+        radius = SQUARESIZE // 6
 
         pygame.draw.circle(screen, key_tran[peg], (x, y), radius)
 
