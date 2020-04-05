@@ -87,6 +87,8 @@ def draw_board(guess_record, fb_record):
     pygame.display.update()
 
 
+draw_board(game.guess_record(), game.fb_record())
+
 while not game.game_over():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -94,9 +96,10 @@ while not game.game_over():
             sys.exit()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            pygame.display.update()
             # Guess is temporarily inputted by text
             guessed_code = tuple(int(n) for n in input('Enter guess: '))
             game.guess(guessed_code)
-
             draw_board(game.guess_record(), game.fb_record())
+
+print('You win!') if game.victory() else print('You lose.')
+pygame.time.wait(3000)
