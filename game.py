@@ -24,6 +24,12 @@ color_tran = {
     6: PURPLE
 }
 
+key_tran = {
+    0: GRAY,
+    1: WHITE,
+    2: BLACK
+}
+
 pygame.init()
 
 pegs = 4
@@ -41,7 +47,44 @@ screen = pygame.display.set_mode((width, height), 0, 32)
 screen.fill(DARK_GRAY)
 pygame.display.set_caption('Mastermind')
 
-pygame.display.update()
+
+def draw_guess(guess_record, turn):
+    guess = (0, 0, 0, 0)
+    if turn in guess_record:
+        guess = guess_record[turn]
+
+    for i, peg in enumerate(guess, 1):
+        x = i * SQUARESIZE + SQUARESIZE // 2
+        y = height - ((turn+1) * SQUARESIZE + SQUARESIZE // 2)
+        radius = SQUARESIZE // 4
+
+        pygame.draw.circle(screen, color_tran[peg], (x, y), radius)
+
+
+def draw_feedback(fb_record, turn):
+    fb = (0, 0, 0, 0)
+    if turn in fb_record:
+        blacks = fb_record[turn].blacks
+        whites = fb_record[turn].whites
+        blanks = pegs - (blacks + whites)
+
+        fb = tuple(blacks*[2] + whites*[1] + blanks*[0])
+
+    for i, peg in enumerate(fb):
+        x = (width - SQUARESIZE) + SQUARESIZE//4 + i % 2 * SQUARESIZE//2
+        y = (height - ((turn+2) * SQUARESIZE)) + \
+            SQUARESIZE//4 + i//2 * SQUARESIZE//2
+        radius = SQUARESIZE // 10
+
+        pygame.draw.circle(screen, key_tran[peg], (x, y), radius)
+
+
+def draw_board(guess_record, fb_record):
+    for turn in range(turns):
+        draw_guess(guess_record, turn)
+        draw_feedback(fb_record, turn)
+
+    pygame.display.update()
 
 
 while not game.game_over():
@@ -49,3 +92,11 @@ while not game.game_over():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            pygame.display.update()
+            # Guess is temporarily inputted by text
+            guessed_code = tuple(int(n) for n in input('Enter guess: '))
+            game.guess(guessed_code)
+
+            draw_board(game.guess_record(), game.fb_record())

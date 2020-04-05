@@ -38,3 +38,9 @@ class Mastermind():
 
     def last_fb(self):
         return self.fbs[len(self.fbs)-1] if self.fbs else None
+
+    def guess_record(self):
+        return self.guesses
+
+    def fb_record(self):
+        return self.fbs
