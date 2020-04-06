@@ -137,9 +137,9 @@ while not game.game_over():
                     if button.is_over(pos):
                         guessed_code.append(button.color_code())
 
+                        game.guess(tuple(guessed_code))
+                        draw_board(game.guess_record(), game.fb_record())
                         if len(guessed_code) == pegs:
-                            game.guess(tuple(guessed_code))
-                            draw_board(game.guess_record(), game.fb_record())
                             guessed_code.clear()
 
                         break

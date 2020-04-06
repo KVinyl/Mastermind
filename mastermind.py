@@ -33,24 +33,27 @@ class Mastermind():
         return self.victory() or len(self.guesses) == self.turns
 
     def guess(self, guessed_code):
-        """Parameter, guessed_code, must be a tuple of integers with the
-        same length as self.code.
+        """Parameter, guessed_code, is a tuple of integers.
+
+        if and only if len(guessed_code) == pegs, then feedback will be
+        evaluated and stored.
 
         The guessed code and the feedback of the guessed code are added
         to correspond with the turn number.
         """
         if not self.game_over():
-            i = len(self.guesses)
+            i = len(self.fbs)
             self.guesses[i] = guessed_code
 
-            blacks = sum(g == c for g, c in zip(guessed_code, self.code))
-            whites = sum((Counter(guessed_code) & Counter(
-                self.code)).values()) - blacks
+            if len(guessed_code) == self.pegs:
+                blacks = sum(g == c for g, c in zip(guessed_code, self.code))
+                whites = sum((Counter(guessed_code) & Counter(
+                    self.code)).values()) - blacks
 
-            self.fbs[i] = Feedback(blacks, whites)
+                self.fbs[i] = Feedback(blacks, whites)
 
-            if blacks == self.pegs:
-                self.won = True
+                if blacks == self.pegs:
+                    self.won = True
 
     def guess_record(self):
         """Return a dictionary of guesses the player has made in the game.
