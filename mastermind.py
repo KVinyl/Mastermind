@@ -55,7 +55,7 @@ class Mastermind():
     def guess_record(self):
         """Return a dictionary of guesses the player has made in the game.
 
-        key: Turn number (0-based)
+        key: Turn number(0-based)
         value: Guessed code as a tuple of integers
         """
         return self.guesses
@@ -64,7 +64,7 @@ class Mastermind():
         """Return a dictionary of feedback on the guesses the player has
         made in the game.
 
-        key: Turn number (0-based)
+        key: Turn number(0-based)
         value: Feedback of guessed code as a tuple of integers
         representing the number of black and white pegs.
         """

@@ -39,6 +39,7 @@ turns = 12
 game = Mastermind(pegs, colors, turns)
 
 SQUARESIZE = 60
+pegsize = SQUARESIZE//3
 
 width = SQUARESIZE * (pegs + 2)
 height = SQUARESIZE * (turns + 2)
@@ -46,6 +47,38 @@ height = SQUARESIZE * (turns + 2)
 screen = pygame.display.set_mode((width, height), 0, 32)
 screen.fill(DARK_GRAY)
 pygame.display.set_caption('Mastermind')
+
+
+class GuessButton():
+    def __init__(self, color, x, y, radius):
+        self.color = color
+        self.x = x
+        self.y = y
+        self.radius = radius
+
+    def color_code(self):
+        return self.color
+
+    def draw(self):
+        pygame.draw.circle(
+            screen, color_tran[self.color], (self.x, self.y), self.radius)
+
+    def is_over(self, mouse_pos):
+        return (pos[0] - self.x)**2 + (pos[1] - self.y)**2 <= self.radius**2
+
+
+def draw_guess_buttons(colors):
+    buttons = []
+
+    y = height - SQUARESIZE//2
+    radius = pegsize
+    for c in range(1, colors+1):
+        x = (c-1) * SQUARESIZE + SQUARESIZE // 2
+        color_button = GuessButton(c, x, y, radius)
+        color_button.draw()
+        buttons.append(color_button)
+
+    return buttons
 
 
 def draw_guess(guess_record, turn):
@@ -56,7 +89,7 @@ def draw_guess(guess_record, turn):
     for i, peg in enumerate(guess, 1):
         x = i * SQUARESIZE + SQUARESIZE // 2
         y = height - ((turn+1) * SQUARESIZE + SQUARESIZE // 2)
-        radius = SQUARESIZE // 4
+        radius = pegsize
 
         pygame.draw.circle(screen, color_tran[peg], (x, y), radius)
 
@@ -87,19 +120,29 @@ def draw_board(guess_record, fb_record):
     pygame.display.update()
 
 
+guess_buttons = draw_guess_buttons(colors)
 draw_board(game.guess_record(), game.fb_record())
 
+guessed_code = []
 while not game.game_over():
     for event in pygame.event.get():
+        pos = pygame.mouse.get_pos()
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            # Guess is temporarily inputted by text
-            guessed_code = tuple(int(n) for n in input('Enter guess: '))
-            game.guess(guessed_code)
-            draw_board(game.guess_record(), game.fb_record())
+            if pos[1] >= height-SQUARESIZE:
+                for button in guess_buttons:
+                    if button.is_over(pos):
+                        guessed_code.append(button.color_code())
+
+                        if len(guessed_code) == pegs:
+                            game.guess(tuple(guessed_code))
+                            draw_board(game.guess_record(), game.fb_record())
+                            guessed_code.clear()
+
+                        break
 
 print('You win!') if game.victory() else print('You lose.')
 pygame.time.wait(3000)
