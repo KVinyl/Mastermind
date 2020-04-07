@@ -13,6 +13,7 @@ PURPLE = (255, 0, 255)
 ORANGE = (255, 100, 0)
 GRAY = (128, 128, 128)
 DARK_GRAY = (96, 96, 96)
+DARKEST_GRAY = (48, 48, 48)
 
 color_tran = {
     0: GRAY,
@@ -73,7 +74,8 @@ def draw_guess_buttons(colors):
     y = height - SQUARESIZE//2
     radius = pegsize
 
-    pygame.draw.rect(screen, BLACK, (0, height-SQUARESIZE, width, SQUARESIZE))
+    pygame.draw.rect(screen, DARKEST_GRAY,
+                     (0, height-SQUARESIZE, width, SQUARESIZE))
     for c in range(1, colors+1):
         x = (c-1) * SQUARESIZE + SQUARESIZE // 2
         color_button = GuessButton(c, x, y, radius)
@@ -122,7 +124,8 @@ def draw_board(guess_record, fb_record):
     pygame.display.update()
 
 
-def draw_code(code):
+def draw_top_bar(code):
+    pygame.draw.rect(screen, DARKEST_GRAY, (0, 0, width, SQUARESIZE))
     if code is not None:
         for i, peg in enumerate(code, 1):
             x = i * SQUARESIZE + SQUARESIZE // 2
@@ -136,6 +139,7 @@ def draw_code(code):
 
 guess_buttons = draw_guess_buttons(colors)
 draw_board(game.guess_record(), game.fb_record())
+draw_top_bar(game.reveal_code())
 
 guessed_code = []
 while not game.game_over():
@@ -158,7 +162,7 @@ while not game.game_over():
 
                         break
 
-draw_code(game.reveal_code())
+draw_top_bar(game.reveal_code())
 
 print('You win!') if game.victory() else print('You lose.')
 pygame.time.wait(3000)
