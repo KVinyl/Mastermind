@@ -10,7 +10,7 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 PURPLE = (255, 0, 255)
-ORANGE = (255, 165, 0)
+ORANGE = (255, 100, 0)
 GRAY = (128, 128, 128)
 DARK_GRAY = (96, 96, 96)
 
@@ -72,6 +72,8 @@ def draw_guess_buttons(colors):
 
     y = height - SQUARESIZE//2
     radius = pegsize
+
+    pygame.draw.rect(screen, BLACK, (0, height-SQUARESIZE, width, SQUARESIZE))
     for c in range(1, colors+1):
         x = (c-1) * SQUARESIZE + SQUARESIZE // 2
         color_button = GuessButton(c, x, y, radius)
