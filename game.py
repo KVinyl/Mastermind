@@ -122,6 +122,18 @@ def draw_board(guess_record, fb_record):
     pygame.display.update()
 
 
+def draw_code(code):
+    if code is not None:
+        for i, peg in enumerate(code, 1):
+            x = i * SQUARESIZE + SQUARESIZE // 2
+            y = SQUARESIZE // 2
+            radius = pegsize
+
+            pygame.draw.circle(screen, color_tran[peg], (x, y), radius)
+
+    pygame.display.update()
+
+
 guess_buttons = draw_guess_buttons(colors)
 draw_board(game.guess_record(), game.fb_record())
 
@@ -145,6 +157,8 @@ while not game.game_over():
                             guessed_code.clear()
 
                         break
+
+draw_code(game.reveal_code())
 
 print('You win!') if game.victory() else print('You lose.')
 pygame.time.wait(3000)

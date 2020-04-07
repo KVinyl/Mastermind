@@ -72,3 +72,8 @@ class Mastermind():
         representing the number of black and white pegs.
         """
         return self.fbs
+
+    def reveal_code(self):
+        """Return code if and only if the game is over.
+        Otherwise return None"""
+        return self.code if self.game_over() else None
