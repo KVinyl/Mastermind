@@ -30,7 +30,7 @@ class Mastermind():
 
     def game_over(self):
         """Return whether the game is over."""
-        return self.victory() or len(self.guesses) == self.turns
+        return self.victory() or len(self.fbs) == self.turns
 
     def guess(self, guessed_code):
         """Parameter, guessed_code, is a tuple of integers.
