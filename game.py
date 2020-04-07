@@ -127,14 +127,15 @@ def draw_board(guess_record, fb_record):
 def draw_top_bar(code=None):
     pygame.draw.rect(screen, DARKEST_GRAY, (0, 0, width, SQUARESIZE))
     if code is None:
-        code = (0, 0, 0, 0)
+        pygame.draw.rect(screen, BLACK, (SQUARESIZE, 0,
+                                         pegs * SQUARESIZE, SQUARESIZE))
+    else:
+        for i, peg in enumerate(code, 1):
+            x = i * SQUARESIZE + SQUARESIZE // 2
+            y = SQUARESIZE // 2
+            radius = pegsize
 
-    for i, peg in enumerate(code, 1):
-        x = i * SQUARESIZE + SQUARESIZE // 2
-        y = SQUARESIZE // 2
-        radius = pegsize
-
-        pygame.draw.circle(screen, color_tran[peg], (x, y), radius)
+            pygame.draw.circle(screen, color_tran[peg], (x, y), radius)
 
     pygame.display.update()
 
