@@ -124,22 +124,24 @@ def draw_board(guess_record, fb_record):
     pygame.display.update()
 
 
-def draw_top_bar(code):
+def draw_top_bar(code=None):
     pygame.draw.rect(screen, DARKEST_GRAY, (0, 0, width, SQUARESIZE))
-    if code is not None:
-        for i, peg in enumerate(code, 1):
-            x = i * SQUARESIZE + SQUARESIZE // 2
-            y = SQUARESIZE // 2
-            radius = pegsize
+    if code is None:
+        code = (0, 0, 0, 0)
 
-            pygame.draw.circle(screen, color_tran[peg], (x, y), radius)
+    for i, peg in enumerate(code, 1):
+        x = i * SQUARESIZE + SQUARESIZE // 2
+        y = SQUARESIZE // 2
+        radius = pegsize
+
+        pygame.draw.circle(screen, color_tran[peg], (x, y), radius)
 
     pygame.display.update()
 
 
 guess_buttons = draw_guess_buttons(colors)
 draw_board(game.guess_record(), game.fb_record())
-draw_top_bar(game.reveal_code())
+draw_top_bar()
 
 guessed_code = []
 while not game.game_over():
