@@ -88,7 +88,7 @@ def draw_guess_buttons(colors):
 
 def draw_guess(guess_record, turn):
     guess = (0, 0, 0, 0)
-    if turn in guess_record:
+    if turn in guess_record and guess_record[turn]:
         guess = guess_record[turn]
 
     for i, peg in enumerate(guess, 1):
@@ -170,7 +170,13 @@ while not game.game_over():
             sys.exit()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if pos[1] >= height-SQUARESIZE:
+            # Right click
+            if event.button == 3:
+                guessed_code.clear()
+                game.guess(tuple(guessed_code))
+                draw_board(game.guess_record(), game.fb_record())
+
+            elif pos[1] >= height-SQUARESIZE:
                 for button in guess_buttons:
                     if button.is_over(pos):
                         guessed_code.append(button.color_code())
