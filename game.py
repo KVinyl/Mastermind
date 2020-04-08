@@ -54,21 +54,45 @@ divider = height - 2 * SQUARESIZE
 
 
 class GuessButton():
-    def __init__(self, color, x, y, radius):
-        self.color = color
+    def __init__(self, color_int, x, y, radius):
+        self.color_int = color_int
         self.x = x
         self.y = y
         self.radius = radius
 
     def color_code(self):
-        return self.color
+        return self.color_int
 
     def draw(self):
         pygame.draw.circle(
-            screen, color_tran[self.color], (self.x, self.y), self.radius)
+            screen, color_tran[self.color_int], (self.x, self.y), self.radius)
 
     def is_over(self, mouse_pos):
         return (pos[0] - self.x)**2 + (pos[1] - self.y)**2 <= self.radius**2
+
+
+class RectButton():
+    def __init__(self, color, x, y, width, height, text=''):
+        self.color = color
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.text = text
+
+    def draw(self):
+        pygame.draw.rect(screen, self.color,
+                         (self.x, self.y, self.width, self.height))
+
+        if self.text != '':
+            font = pygame.font.SysFont('arial', 40)
+            text = font.render(self.text, 1, WHITE)
+            screen.blit(text, (self.x + (self.width/2 - text.get_width()/2),
+                               self.y + (self.height/2 - text.get_height()/2)))
+
+    def is_over(self, pos):
+        return (pos[0] > self.x and pos[0] < self.x + self.width
+                and pos[1] > self.y and pos[1] < self.y + self.height)
 
 
 def draw_guess_buttons(colors):
@@ -160,6 +184,13 @@ def draw_top_bar(code=None):
 
 
 guess_buttons = draw_guess_buttons(colors)
+clear = RectButton(RED, 0, divider + SQUARESIZE, width//2, SQUARESIZE, 'CLEAR')
+submit = RectButton(GREEN, width//2, divider + SQUARESIZE,
+                    width//2, SQUARESIZE, 'SUBMIT')
+
+clear.draw()
+submit.draw()
+
 draw_board(game.guess_record(), game.fb_record())
 draw_top_bar()
 
