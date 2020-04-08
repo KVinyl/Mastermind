@@ -15,6 +15,7 @@ GRAY = (128, 128, 128)
 DARK_GRAY = (96, 96, 96)
 DARKEST_GRAY = (48, 48, 48)
 
+
 color_tran = {
     0: GRAY,
     1: RED,
@@ -116,19 +117,35 @@ def draw_feedback(fb_record, turn):
         pygame.draw.circle(screen, key_tran[peg], (x, y), radius)
 
 
+def draw_left_col(n=None):
+    pygame.draw.rect(screen, DARK_GRAY, (0, 0, SQUARESIZE, height-SQUARESIZE))
+
+    y = 0 if n is None else height - (SQUARESIZE * (n + 2))
+
+    x1, y1 = SQUARESIZE//6, y + SQUARESIZE//6
+    x2, y2 = x1, y + SQUARESIZE*5//6
+    x3, y3 = SQUARESIZE*5//6, y+SQUARESIZE//2
+    pygame.draw.polygon(screen, DARKEST_GRAY, [
+                        (x1, y1), (x2, y2), (x3, y3)])
+
+    pygame.display.update()
+
+
 def draw_board(guess_record, fb_record):
     for turn in range(turns):
         draw_guess(guess_record, turn)
         draw_feedback(fb_record, turn)
 
+    draw_left_col(len(fb_record))
+
     pygame.display.update()
 
 
 def draw_top_bar(code=None):
-    pygame.draw.rect(screen, DARKEST_GRAY, (0, 0, width, SQUARESIZE))
+    pygame.draw.rect(screen, DARK_GRAY, (0, 0, width, SQUARESIZE))
     if code is None:
-        pygame.draw.rect(screen, BLACK, (SQUARESIZE, 0,
-                                         pegs * SQUARESIZE, SQUARESIZE))
+        pygame.draw.rect(screen, DARKEST_GRAY, (SQUARESIZE, 0,
+                                                pegs * SQUARESIZE, SQUARESIZE))
     else:
         for i, peg in enumerate(code, 1):
             x = i * SQUARESIZE + SQUARESIZE // 2
@@ -166,6 +183,7 @@ while not game.game_over():
                         break
 
 draw_top_bar(game.reveal_code())
+draw_left_col()
 
 print('You win!') if game.victory() else print('You lose.')
 pygame.time.wait(3000)
