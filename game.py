@@ -204,24 +204,29 @@ while not game.game_over():
 
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if pos[1] >= divider:
-                # Checks if a guess button was clicked
-                for button in guess_buttons:
-                    if button.is_over(pos):
-                        guessed_code.append(button.color_code())
-
-                        game.guess(tuple(guessed_code))
-                        draw_board(game.guess_record(), game.fb_record())
-                        if len(guessed_code) == pegs:
-                            guessed_code.clear()
-
-                        break
                 # Checks if the clear button was clicked
                 if clear.is_over(pos):
                     guessed_code.clear()
-                    game.guess(tuple(guessed_code))
-                    draw_board(game.guess_record(), game.fb_record())
+                    game.guess(guessed_code, submitted=False)
 
                 # Checks if the submit button was clicked
+                elif submit.is_over(pos):
+                    game.guess(guessed_code)
+                    if len(guessed_code) == pegs:
+                        guessed_code.clear()
+                # Checks if a guess button was clicked
+                else:
+                    for button in guess_buttons:
+                        if button.is_over(pos):
+                            if len(guessed_code) < pegs:
+                                guessed_code.append(button.color_code())
+
+                            game.guess(guessed_code, submitted=False)
+                            break
+
+                draw_board(game.guess_record(), game.fb_record())
+                #print(game.guess_record(), game.fb_record())
+
 
 draw_top_bar(game.reveal_code())
 draw_left_col()
