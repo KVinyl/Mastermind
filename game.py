@@ -87,8 +87,8 @@ class RectButton():
         if self.text != '':
             font = pygame.font.SysFont('arial', 40)
             text = font.render(self.text, 1, WHITE)
-            screen.blit(text, (self.x + (self.width/2 - text.get_width()/2),
-                               self.y + (self.height/2 - text.get_height()/2)))
+            screen.blit(text, (self.x + (self.width//2-text.get_width()//2),
+                               self.y + (self.height//2-text.get_height()//2)))
 
     def is_over(self, pos):
         return (pos[0] > self.x and pos[0] < self.x + self.width
@@ -203,13 +203,7 @@ while not game.game_over():
             sys.exit()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            # Right click
-            if event.button == 3:
-                guessed_code.clear()
-                game.guess(tuple(guessed_code))
-                draw_board(game.guess_record(), game.fb_record())
-
-            elif pos[1] >= divider:
+            if event.button == 1 and pos[1] >= divider:
                 for button in guess_buttons:
                     if button.is_over(pos):
                         guessed_code.append(button.color_code())
