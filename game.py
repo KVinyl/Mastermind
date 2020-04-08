@@ -44,11 +44,13 @@ SQUARESIZE = 60
 pegsize = SQUARESIZE//3
 
 width = SQUARESIZE * (pegs + 2)
-height = SQUARESIZE * (turns + 2)
+height = SQUARESIZE * (turns + 3)
 
 screen = pygame.display.set_mode((width, height), 0, 32)
 screen.fill(DARK_GRAY)
 pygame.display.set_caption('Mastermind')
+
+divider = height - 2 * SQUARESIZE
 
 
 class GuessButton():
@@ -72,11 +74,11 @@ class GuessButton():
 def draw_guess_buttons(colors):
     buttons = []
 
-    y = height - SQUARESIZE//2
+    y = divider + SQUARESIZE//2
     radius = pegsize
 
     pygame.draw.rect(screen, DARKEST_GRAY,
-                     (0, height-SQUARESIZE, width, SQUARESIZE))
+                     (0, height-SQUARESIZE*2, width, SQUARESIZE*2))
     for c in range(1, colors+1):
         x = (c-1) * SQUARESIZE + SQUARESIZE // 2
         color_button = GuessButton(c, x, y, radius)
@@ -93,7 +95,7 @@ def draw_guess(guess_record, turn):
 
     for i, peg in enumerate(guess, 1):
         x = i * SQUARESIZE + SQUARESIZE // 2
-        y = height - ((turn+1) * SQUARESIZE + SQUARESIZE // 2)
+        y = divider - (turn * SQUARESIZE + SQUARESIZE // 2)
         radius = pegsize
 
         pygame.draw.circle(screen, color_tran[peg], (x, y), radius)
@@ -110,7 +112,7 @@ def draw_feedback(fb_record, turn):
 
     for i, peg in enumerate(fb):
         x = (width - SQUARESIZE) + SQUARESIZE//4 + i % 2 * SQUARESIZE//2
-        y = (height - ((turn+2) * SQUARESIZE)) + \
+        y = (divider - ((turn+1) * SQUARESIZE)) + \
             SQUARESIZE//4 + i//2 * SQUARESIZE//2
         radius = SQUARESIZE // 6
 
@@ -118,9 +120,9 @@ def draw_feedback(fb_record, turn):
 
 
 def draw_left_col(n=None):
-    pygame.draw.rect(screen, DARK_GRAY, (0, 0, SQUARESIZE, height-SQUARESIZE))
+    pygame.draw.rect(screen, DARK_GRAY, (0, 0, SQUARESIZE, divider))
 
-    y = 0 if n is None else height - (SQUARESIZE * (n + 2))
+    y = 0 if n is None else height - (SQUARESIZE * (n + 3))
 
     x1, y1 = SQUARESIZE//6, y + SQUARESIZE//6
     x2, y2 = x1, y + SQUARESIZE*5//6
@@ -176,7 +178,7 @@ while not game.game_over():
                 game.guess(tuple(guessed_code))
                 draw_board(game.guess_record(), game.fb_record())
 
-            elif pos[1] >= height-SQUARESIZE:
+            elif pos[1] >= divider:
                 for button in guess_buttons:
                     if button.is_over(pos):
                         guessed_code.append(button.color_code())
