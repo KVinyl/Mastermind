@@ -14,6 +14,7 @@ ORANGE = (255, 100, 0)
 GRAY = (128, 128, 128)
 DARK_GRAY = (96, 96, 96)
 DARKEST_GRAY = (48, 48, 48)
+BLUE_GREEN = (13, 152, 186)
 
 
 color_tran = {
@@ -157,7 +158,7 @@ def draw_left_col(n=None):
     x1, y1 = SQUARESIZE//6, y + SQUARESIZE//6
     x2, y2 = x1, y + SQUARESIZE*5//6
     x3, y3 = SQUARESIZE*5//6, y+SQUARESIZE//2
-    pygame.draw.polygon(screen, DARKEST_GRAY, [
+    pygame.draw.polygon(screen, BLUE_GREEN, [
                         (x1, y1), (x2, y2), (x3, y3)])
 
     pygame.display.update()
