@@ -38,8 +38,6 @@ pegs = 4
 colors = 6
 turns = 12
 
-game = Mastermind(pegs, colors, turns)
-
 SQUARESIZE = 60
 pegsize = SQUARESIZE//3
 
@@ -67,7 +65,7 @@ class GuessButton():
         pygame.draw.circle(
             screen, color_tran[self.color_int], (self.x, self.y), self.radius)
 
-    def is_over(self, mouse_pos):
+    def is_over(self, pos):
         return (pos[0] - self.x)**2 + (pos[1] - self.y)**2 <= self.radius**2
 
 
@@ -183,53 +181,81 @@ def draw_top_bar(code=None):
     pygame.display.update()
 
 
-guess_buttons = draw_guess_buttons(colors)
-clear = RectButton(RED, 0, divider + SQUARESIZE, width//2, SQUARESIZE, 'CLEAR')
-submit = RectButton(GREEN, width//2, divider + SQUARESIZE,
-                    width//2, SQUARESIZE, 'SUBMIT')
+def game():
+    mastermind = Mastermind(pegs, colors, turns)
 
-clear.draw()
-submit.draw()
+    guess_buttons = draw_guess_buttons(colors)
+    clear = RectButton(RED, 0, divider + SQUARESIZE,
+                       width//2, SQUARESIZE, 'CLEAR')
+    submit = RectButton(GREEN, width//2, divider + SQUARESIZE,
+                        width//2, SQUARESIZE, 'SUBMIT')
 
-draw_board(game.guess_record(), game.fb_record())
-draw_top_bar()
+    clear.draw()
+    submit.draw()
 
-guessed_code = []
-while not game.game_over():
-    for event in pygame.event.get():
-        pos = pygame.mouse.get_pos()
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+    draw_board(mastermind.guess_record(), mastermind.fb_record())
+    draw_top_bar()
 
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if pos[1] >= divider:
-                # Checks if the clear button was clicked
-                if clear.is_over(pos):
-                    guessed_code.clear()
-                    game.guess(guessed_code, submitted=False)
+    guessed_code = []
+    while not mastermind.game_over():
+        for event in pygame.event.get():
+            pos = pygame.mouse.get_pos()
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
 
-                # Checks if the submit button was clicked
-                elif submit.is_over(pos):
-                    game.guess(guessed_code)
-                    if len(guessed_code) == pegs:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if pos[1] >= divider:
+                    # Checks if the clear button was clicked
+                    if clear.is_over(pos):
                         guessed_code.clear()
-                # Checks if a guess button was clicked
-                else:
-                    for button in guess_buttons:
-                        if button.is_over(pos):
-                            if len(guessed_code) < pegs:
-                                guessed_code.append(button.color_code())
+                        mastermind.guess(guessed_code, submitted=False)
 
-                            game.guess(guessed_code, submitted=False)
-                            break
+                    # Checks if the submit button was clicked
+                    elif submit.is_over(pos):
+                        mastermind.guess(guessed_code)
+                        if len(guessed_code) == pegs:
+                            guessed_code.clear()
 
-                draw_board(game.guess_record(), game.fb_record())
-                #print(game.guess_record(), game.fb_record())
+                    # Checks if a guess button was clicked
+                    else:
+                        for button in guess_buttons:
+                            if button.is_over(pos):
+                                if len(guessed_code) < pegs:
+                                    guessed_code.append(button.color_code())
+
+                                mastermind.guess(guessed_code, submitted=False)
+                                break
+
+                    draw_board(mastermind.guess_record(),
+                               mastermind.fb_record())
+
+    draw_top_bar(mastermind.reveal_code())
+    draw_left_col()
 
 
-draw_top_bar(game.reveal_code())
-draw_left_col()
+def main():
+    while True:
+        game()
 
-print('You win!') if game.victory() else print('You lose.')
-pygame.time.wait(3000)
+        new_game = RectButton(GREEN, 0, divider + SQUARESIZE,
+                              width, SQUARESIZE, 'NEW GAME')
+        new_game.draw()
+        pygame.display.update()
+
+        restart = False
+        while not restart:
+            for event in pygame.event.get():
+                pos = pygame.mouse.get_pos()
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    if new_game.is_over(pos):
+                        restart = True
+                        break
+
+
+if __name__ == '__main__':
+    main()
