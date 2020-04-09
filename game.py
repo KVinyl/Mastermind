@@ -93,6 +93,14 @@ class RectButton():
                 and pos[1] > self.y and pos[1] < self.y + self.height)
 
 
+def draw_lines(turns):
+    pygame.draw.line(screen, GRAY, (width - SQUARESIZE,
+                                    0), (width - SQUARESIZE, divider-1))
+    for t in range(2, turns+1):
+        y = t * SQUARESIZE
+        pygame.draw.line(screen, GRAY, (SQUARESIZE, y), (width, y))
+
+
 def draw_guess_buttons(colors):
     buttons = []
 
@@ -185,14 +193,15 @@ def game():
     mastermind = Mastermind(pegs, colors, turns)
 
     guess_buttons = draw_guess_buttons(colors)
+
     clear = RectButton(RED, 0, divider + SQUARESIZE,
                        width//2, SQUARESIZE, 'CLEAR')
     submit = RectButton(GREEN, width//2, divider + SQUARESIZE,
                         width//2, SQUARESIZE, 'SUBMIT')
-
     clear.draw()
     submit.draw()
 
+    draw_lines(turns)
     draw_board(mastermind.guess_record(), mastermind.fb_record())
     draw_top_bar()
 
@@ -224,7 +233,8 @@ def game():
                                 if len(guessed_code) < pegs:
                                     guessed_code.append(button.color_code())
 
-                                mastermind.guess(guessed_code, submitted=False)
+                                mastermind.guess(
+                                    guessed_code, submitted=False)
                                 break
 
                     draw_board(mastermind.guess_record(),
