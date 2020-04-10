@@ -86,8 +86,8 @@ class RectButton():
         if self.text != '':
             font = pygame.font.SysFont('arial', 40)
             text = font.render(self.text, 1, WHITE)
-            screen.blit(text, (self.x + (self.width//2-text.get_width()//2),
-                               self.y + (self.height//2-text.get_height()//2)))
+            screen.blit(text, (self.x + (self.width-text.get_width())//2,
+                               self.y + (self.height-text.get_height())//2))
 
     def is_over(self, pos):
         return (pos[0] > self.x and pos[0] < self.x + self.width
@@ -97,7 +97,7 @@ class RectButton():
 def draw_lines(turns):
     pygame.draw.line(screen, GRAY, (width - SQUARESIZE,
                                     0), (width - SQUARESIZE, divider-1))
-    for t in range(2, turns+1):
+    for t in range(1, turns+1):
         y = t * SQUARESIZE
         pygame.draw.line(screen, GRAY, (SQUARESIZE, y), (width, y))
 
@@ -174,18 +174,32 @@ def draw_board(guess_record, fb_record):
     pygame.display.update()
 
 
-def draw_top_bar(code=None):
+def draw_top_bar(code=None, victory=False):
     pygame.draw.rect(screen, DARK_GRAY, (0, 0, width, SQUARESIZE))
+
+    y = SQUARESIZE//2
+    radius = pegsize
+
     if code is None:
-        pygame.draw.rect(screen, DARKEST_GRAY, (SQUARESIZE, 0,
-                                                pegs * SQUARESIZE, SQUARESIZE))
+        for i in range(1, pegs+1):
+            x = i * SQUARESIZE + SQUARESIZE//2
+            pygame.draw.circle(screen, DARKEST_GRAY, (x, y), radius)
+
+            font = pygame.font.SysFont('arial', 30)
+            text = font.render('?', 1, DARK_GRAY)
+            screen.blit(text, (x-text.get_width()//2,
+                               y-text.get_height()//2))
+
     else:
         for i, peg in enumerate(code, 1):
-            x = i * SQUARESIZE + SQUARESIZE // 2
-            y = SQUARESIZE // 2
-            radius = pegsize
-
+            x = i * SQUARESIZE + SQUARESIZE//2
             pygame.draw.circle(screen, color_tran[peg], (x, y), radius)
+
+        font = pygame.font.SysFont('arial', 50)
+        w_l = font.render(
+            'W', 1, GREEN) if victory else font.render('L', 1, RED)
+        screen.blit(w_l, (width-SQUARESIZE+(SQUARESIZE - w_l.get_width())//2,
+                          (SQUARESIZE-w_l.get_height())//2))
 
     pygame.display.update()
 
@@ -241,7 +255,7 @@ def game():
                     draw_board(mastermind.guess_record(),
                                mastermind.fb_record())
 
-    draw_top_bar(mastermind.reveal_code())
+    draw_top_bar(mastermind.reveal_code(), mastermind.victory())
     draw_left_col()
 
 
